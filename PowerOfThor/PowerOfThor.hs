@@ -5,11 +5,11 @@ loop :: Int -> Int -> IO()
 loop x y = do 
   input_line <- getLine
   let xOut x | x > 0 = "E"
-      xOut x | x < 0 = "W"
-      xOut _ | x == 0 = ""
+             | x < 0 = "W"
+             | x == 0 = ""
   let yOut y | y > 0 = "S"
-      yOut y | y < 0 = "N"
-      yOut _ | y == 0 = ""
+             | y < 0 = "N"
+             | y == 0 = ""
   hPutStrLn stderr $ "x = " ++ show x ++ " y = " ++ show y
   hPutStrLn stderr $ "x = " ++ xOut x ++ " y = " ++ yOut y
   putStrLn (yOut y ++ xOut x)
