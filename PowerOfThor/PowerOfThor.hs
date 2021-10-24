@@ -9,7 +9,7 @@ loop x y = do
       xOut _ | x == 0 = ""
   let yOut y | y > 0 = "S"
       yOut y | y < 0 = "N"
-      yOut _ | y == 0 = ""\
+      yOut _ | y == 0 = ""
   hPutStrLn stderr $ "x = " ++ show x ++ " y = " ++ show y
   hPutStrLn stderr $ "x = " ++ xOut x ++ " y = " ++ yOut y
   putStrLn (yOut y ++ xOut x)
