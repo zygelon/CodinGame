@@ -4,34 +4,32 @@ import Control.Monad
 main :: IO ()
 
 mountainN = 8
-{-
-mointainReadLoop curMountain calcMax = do
-            inputLine <- getLine
-            if curMountain >= mountainN 
-                then return calcMax
-            
-            let mountainh = read inputLine :: Int -- represents the height of one mountain.
-            return ()
-            --return mointainReadLoop curMountain max (calcMax mountainh)
--}
-readInput :: IO [Int]
-readInput = do
-    lines <- replicateM (mountainN) $ do
-        line <- getLine 
-        let mountainh = read line :: Int
-        return mountainh
-    return lines
 
-readMountains = do
-    input <- getLine 
-    let list = read input :: [Int]
-    print list
+readInput :: Int -> IO [(Int, Int)]
+readInput currEpoch = do
+    if currEpoch >= mountainN
+        then return []
+        else do
+            line <- getLine
+            let mountainVar = (read line :: Int, currEpoch)
+            result <- readInput $ currEpoch + 1
+            return (mountainVar : result)
 
-myMax list = foldl max 0 list
+myMax :: (Int, Int) -> (Int, Int) -> (Int, Int)
+myMax (height1, num1) (height2, num2) | height2 > height1 = (height2, num2)
+myMax moutain _ =  moutain
+
+myMaxFold = foldl myMax (-1, -1)
+
+showStrTuple :: (Show a1, Show a2) => (a1, a2) -> [Char]
+showStrTuple (height, currMountain) = "(" ++ show height ++ ", " ++ show currMountain ++ ") "
+
+showStrList :: [(Int, Int)] -> String
+showStrList xs = foldr ((++) . showStrTuple) "" xs
 
 main = do
     hSetBuffering stdout NoBuffering -- DO NOT REMOVE
-    
+
     -- The while loop represents the game.
     -- Each iteration represents a turn of the game
     -- where you are given inputs (the heights of the mountains)
@@ -39,9 +37,10 @@ main = do
     -- The inputs you are given are automatically updated according to your last actions.
     -- game loop
     forever $ do
---        let convertToInt x <- x
-        inputArr <- readInput
-        print $ myMax inputArr
+        inputArr <- readInput 0
+        hPutStrLn stderr "Debug Out Start"
+        hPutStrLn stderr (showStrList inputArr)
+        print $ snd (myMaxFold inputArr)
         -- hPutStrLn stderr "Debug messages..."
-        
+
         -- The index of the mountain to fire on.
