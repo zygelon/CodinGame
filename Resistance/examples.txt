@@ -1,3 +1,10 @@
 ﻿( ( A B ) [ C D [ Z F ] ] )
+
+(
+
+( A B ) -> Res
+[ C D
+
+
 take Int [a] -> [a]
 elemIndex Int -> [Int] -> Maybe Int
