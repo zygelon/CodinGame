@@ -1,16 +1,19 @@
 import System.IO
 import Control.Monad
 
-vspeedLim = -40.0
-accel = 0.3
+vspeedLim = 40.0
+gravi = 3.711
 --data InputData = InputData {}
-calculatePower :: Float -> Float -> Float -> Int
+--calculatePower :: Float -> Float -> Float -> (Int, Float)
+calcTimeToEarth targy vspeed fuel accel = 
+    let descr = 4.0 * vspeed * vspeed + (8.0 * targy * accel)
+        t2 = ((-2.0 * vspeed) - sqrt descr) / (2.0 * accel)
+    in t2
+
+calculatePower :: Num a => Float -> Float -> p -> (a, Float)
 calculatePower targy vspeed fuel = 
- --   if (-vspeedLim + vspeed) / 0.6 > fuel / 4
-    let timeToStop = (vspeedLim / accel)  - ( (-vspeed) / accel)
-    in  if timeToStop * 4 < fuel
-        then 4
-        else 0
+    let powerTime = calcTimeToEarth targy vspeed fuel (gravi - 4)
+    in (0, powerTime)
 
 
 main :: IO ()
@@ -43,7 +46,10 @@ main = do
         let power = read (input!!6) :: Int -- the thrust power (0 to 4).
         
         -- hPutStrLn stderr "Debug messages..."
-        let res = calculatePower y vspeed fuel
+        let (res, powerTime) = calculatePower y vspeed fuel
+        hPutStrLn stderr $ show powerTime
+        --hPutStrLn stderr $ show t1
+        --hPutStrLn stderr $ show t2
         -- 2 integers: rotate power. rotate is the desired rotation angle (should be 0 for level 1), power is the desired thrust power (0 to 4).
-        putStrLn $ "0 " ++ (show res)
+        putStrLn $ "0 " ++ show res
        -- putStrLn "0 3"
