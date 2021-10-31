@@ -1,6 +1,5 @@
 ﻿import System.IO
 import Control.Monad
---NEED POLISHING THIS FORMAT
 --012345678
 --001100000
 --000100000 conway
@@ -56,8 +55,8 @@ getCellNextGeneration (CellSetup alive dead) world cellX cellY =
     let aliveNeighbors = getSumAliveNeighbours world cellX cellY
         curCellStatus = world !! cellY !! cellX
     in if curCellStatus
-       then dead !! aliveNeighbors -- alive -> dead transition ?
-       else alive !! aliveNeighbors -- dead -> alive transition ?
+       then alive !! aliveNeighbors -- alive -> dead transition ?
+       else dead !! aliveNeighbors -- dead -> alive transition ?
 
 getWorldNextGeneration :: CellSetup -> World -> World
 getWorldNextGeneration cellSetup world =
@@ -82,6 +81,10 @@ getWorldNGeneration cellSetup world n =
             let nextWGener = getWorldNextGeneration cellSetup world
             in getWorldNGenerationRec nextWGener (currIter + 1)
     in getWorldNGenerationRec world 0
+
+--printWorld :: World -> IO()
+--printWorld world = 
+
 
 main :: IO ()
 main = do
@@ -118,5 +121,5 @@ main = do
     hPutStrLn stderr $ show debugWorld
     hPutStrLn stderr (show nGeneration)
     -- Write answer to stdout
-    putStrLn outFormatWGeneration
+    putStr outFormatWGeneration
     return ()
