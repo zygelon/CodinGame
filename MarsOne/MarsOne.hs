@@ -5,15 +5,17 @@ vspeedLim = 40.0
 gravi = 3.711
 --data InputData = InputData {}
 --calculatePower :: Float -> Float -> Float -> (Int, Float)
-calcTimeToEarth targy vspeed fuel accel = 
+calcTimeToEarth targy vspeed accel = 
     let descr = 4.0 * vspeed * vspeed + (8.0 * targy * accel)
         t2 = ((-2.0 * vspeed) - sqrt descr) / (2.0 * accel)
     in t2
 
-calculatePower :: Num a => Float -> Float -> p -> (a, Float)
+--calculatePower :: Num a => Float -> Float -> p -> (a, Float)
 calculatePower targy vspeed fuel = 
-    let powerTime = calcTimeToEarth targy vspeed fuel (gravi - 4)
-    in (0, powerTime)
+    let powerTime = calcTimeToEarth targy vspeed (gravi - 4)
+    in if abs (powerTime / 4.0) < fuel 
+       then (4, powerTime)
+       else (0, powerTime)
 
 
 main :: IO ()
