@@ -80,17 +80,15 @@ getWorldNGeneration cellSetup world n =
     let getWorldNGenerationRec :: World -> Int -> World
         getWorldNGenerationRec currWorld currIter | currIter >= n = currWorld
         getWorldNGenerationRec currWorld currIter =
-            let nextWGener = getWorldNextGeneration cellSetup world
+            let nextWGener = getWorldNextGeneration cellSetup currWorld
             in getWorldNGenerationRec nextWGener (currIter + 1)
     in getWorldNGenerationRec world 0
 
 --printWorld :: World -> IO()
 --printWorld world = 
 
-main = testGlider
-
-temp :: IO ()
-temp = do
+main :: IO ()
+main = do
     hSetBuffering stdout NoBuffering -- DO NOT REMOVE
 
     -- Auto-generated code below aims at helping you parse
@@ -129,22 +127,22 @@ temp = do
     putStr outFormatWGeneration
     return ()
 
-debugAddSpaces :: String -> String
-debugAddSpaces []     = []
-debugAddSpaces (x:xs) = x : "   " ++ debugAddSpaces xs
+debugAddSpaces :: Int -> String -> String
+debugAddSpaces _ []     = []
+debugAddSpaces numSpaces (x:xs) = x : "   " ++ debugAddSpaces numSpaces xs
 
 
-    
+debugShowNGeneration :: CellSetup -> World -> Int -> Int -> String
+debugShowNGeneration cellSetup world numSpaces n = 
+    let nGeneration = getWorldNGeneration cellSetup world n -- getWorldNextGeneration cellSetup (getWorldNextGeneration cellSetup world)
+        strOutWorld = makeStrFromBoolWorld nGeneration
+    in foldr (++) "" (map (\str -> str ++ "\n\n") $ (map (debugAddSpaces numSpaces) strOutWorld))    
 
 testGlider :: IO()
 testGlider = do
     spacesLine <- getLine 
-    let spaces = read spacesLine :: Int
-    let debugShowNGeneration :: CellSetup -> World -> Int -> String
-        debugShowNGeneration cellSetup world n = 
-        let nGeneration = getWorldNGeneration cellSetup world n
-            strOutWorld = makeStrFromBoolWorld nGeneration
-        in foldr (++) "" (map (\str -> str ++ "\n\n") $ (map debugAddSpaces strOutWorld))
+    --let spaces = read spacesLine :: Int
+    let spaces = 4
     --let n = 5
     let h = 7
     let w = 7
@@ -159,15 +157,17 @@ testGlider = do
                     "......."]
     let cellSetup = inputToWSetup alive dead
     let world = makeBoolFromStrWorld worldStr
+    let debugShowNGenerSpaces = debugShowNGeneration cellSetup world spaces
+
     putStrLn "----------------0----------------"
-    putStrLn $ debugShowNGeneration cellSetup world 0
+    putStrLn $ debugShowNGenerSpaces 0
     putStrLn "----------------1----------------"
-    putStrLn $ debugShowNGeneration cellSetup world 1
+    putStrLn $ debugShowNGenerSpaces 1
     putStrLn "----------------2----------------"
-    putStrLn $ debugShowNGeneration cellSetup world 2
+    putStrLn $ debugShowNGenerSpaces 2
     putStrLn "----------------3----------------"
-    putStrLn $ debugShowNGeneration cellSetup world 3
+    putStrLn $ debugShowNGenerSpaces 3
     putStrLn "----------------4----------------"
-    putStrLn $ debugShowNGeneration cellSetup world 4
+    putStrLn $ debugShowNGenerSpaces 4
     putStrLn "----------------5----------------"
-    putStrLn $ debugShowNGeneration cellSetup world 5
+    putStrLn $ debugShowNGenerSpaces 5
