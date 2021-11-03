@@ -24,6 +24,7 @@ makeStrFromBoolWorld list = map (map boolWCellToStr) list
 
 strSetupToBool '1' = True
 strSetupToBool '0' = False
+strSetupToBool _ = True
 
 inputToWSetup :: String -> String -> CellSetup
 inputToWSetup alive dead | length alive == setupLen && length dead == setupLen =
@@ -63,7 +64,8 @@ getWorldNextGeneration cellSetup world =
     let height = length world
         width = length $ head world
         wNextGenAllLines :: Int -> World
-        wNextGenAllLines y | y >= height = []
+        wNextGenAllLines y | y == height = []
+        wNextGenAllLines y | y > height = [[True,True,True]]
         wNextGenAllLines y               =
             let wNextGenLine :: Int -> Int -> [Bool]
                 wNextGenLine x y =
@@ -85,9 +87,10 @@ getWorldNGeneration cellSetup world n =
 --printWorld :: World -> IO()
 --printWorld world = 
 
+main = testGlider
 
-main :: IO ()
-main = do
+temp :: IO ()
+temp = do
     hSetBuffering stdout NoBuffering -- DO NOT REMOVE
 
     -- Auto-generated code below aims at helping you parse
@@ -98,6 +101,7 @@ main = do
     let h = read (input!!0) :: Int
     let w = read (input!!1) :: Int
     let n = read (input!!2) :: Int
+    hPutStrLn stderr $ "n = " ++ show n 
     --dead -> alive
     alive <- getLine
     --alive -> dead
@@ -107,14 +111,15 @@ main = do
 
     let cellSetup = inputToWSetup alive dead
     let world = makeBoolFromStrWorld worldStr
+    hPutStrLn stderr "debugInput"
+    hPrint stderr world
     let nGeneration = getWorldNGeneration cellSetup world n
     let strOutWorld = makeStrFromBoolWorld nGeneration
     let outFormatWGeneration = foldr (++) "" (map (\str -> str ++ "\n") strOutWorld)
     -- hPutStrLn stderr "Debug messages..."
-    hPutStrLn stderr $ show world
     let debugWorld = getWorldNextGeneration cellSetup world
     hPutStrLn stderr "height"
-    hPutStrLn stderr $ show (length world)
+    hPrint stderr (length world)
     hPutStrLn stderr "width"
     hPutStrLn stderr $ show (length $ head world)
     hPutStrLn stderr "debugWorld"
@@ -123,3 +128,46 @@ main = do
     -- Write answer to stdout
     putStr outFormatWGeneration
     return ()
+
+debugAddSpaces :: String -> String
+debugAddSpaces []     = []
+debugAddSpaces (x:xs) = x : "   " ++ debugAddSpaces xs
+
+
+    
+
+testGlider :: IO()
+testGlider = do
+    spacesLine <- getLine 
+    let spaces = read spacesLine :: Int
+    let debugShowNGeneration :: CellSetup -> World -> Int -> String
+        debugShowNGeneration cellSetup world n = 
+        let nGeneration = getWorldNGeneration cellSetup world n
+            strOutWorld = makeStrFromBoolWorld nGeneration
+        in foldr (++) "" (map (\str -> str ++ "\n\n") $ (map debugAddSpaces strOutWorld))
+    --let n = 5
+    let h = 7
+    let w = 7
+    let alive = "001100000"
+    let dead  = "000100000"
+    let worldStr = [".O.....",
+                    "..O....",
+                    "OOO....",
+                    ".......",
+                    ".......",
+                    ".......",
+                    "......."]
+    let cellSetup = inputToWSetup alive dead
+    let world = makeBoolFromStrWorld worldStr
+    putStrLn "----------------0----------------"
+    putStrLn $ debugShowNGeneration cellSetup world 0
+    putStrLn "----------------1----------------"
+    putStrLn $ debugShowNGeneration cellSetup world 1
+    putStrLn "----------------2----------------"
+    putStrLn $ debugShowNGeneration cellSetup world 2
+    putStrLn "----------------3----------------"
+    putStrLn $ debugShowNGeneration cellSetup world 3
+    putStrLn "----------------4----------------"
+    putStrLn $ debugShowNGeneration cellSetup world 4
+    putStrLn "----------------5----------------"
+    putStrLn $ debugShowNGeneration cellSetup world 5
