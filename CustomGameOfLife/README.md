@@ -1,0 +1,1 @@
+﻿The task https://www.codingame.com/training/easy/custom-game-of-life
