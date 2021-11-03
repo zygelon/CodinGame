@@ -24,35 +24,14 @@ convertToZeros streakType [] = []
 convertToZeros streakType (x:xs)                            | streakType == charToStreak x =
     '0' : convertToZeros streakType xs
 
---convertToZeros Undefied ('1':xs) = "0 " ++ convertToZeros One xs
---convertToZeros Undefied ('0':xs) = "00 " ++ convertToZeros Zero xs
-
 convertToZeros streakType (x:xs)                            | (streakType == One || streakType == Undefied) && x == '0' =
     " 00 0" ++ convertToZeros Zero xs
 
 convertToZeros streakType (x:xs)                            | (streakType == Zero || streakType == Undefied) && x == '1' =
     " 0 0" ++ convertToZeros One xs
 
-
-
-convertToZeros streakType (x:xs) = "S" ++ show streakType ++ " S " ++ [x] ++ "F"
---100101 error
---0100101 % 37
-
 main :: IO ()
 main = do
-    hSetBuffering stdout NoBuffering -- DO NOT REMOVE
-
-    -- Auto-generated code below aims at helping you parse
-    -- the standard input according to the problem statement.
-
-    asciiChars <- head . words <$> getLine
-    hPutStrLn stderr $ "Head " ++ (toBin . ord $ head asciiChars)
-    hPutStrLn stderr $ "Seq  " ++ toBinSeq asciiChars
-    hPutStrLn stderr $ "Input = " ++ asciiChars
-    -- hPutStrLn stderr "Debug messages..."
-    --print "---------Answer--------"
+    hSetBuffering stdout NoBuffering
+    asciiChars <- getLine
     putStrLn $ tail $ convertToZeros Undefied $ toBinSeq asciiChars
-    -- Write answer to stdout
---    putStrLn "answer"
-    return ()
